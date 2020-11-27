@@ -32,16 +32,23 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
-app.route('/api/whoami').get(ipMW, (req, res) => {
+app.route('/api/whoami').get((req, res) => {
   // const ipAddress = res.locals.clientIp;
+
+  // console.log(req.headers['x-forwarded-for']);
+  // console.log(req.connection.remoteAddress);
+  // console.log(req.socket.remoteAddress);
+  // console.log(req.connection.socket.remoteAddress);
+  /*
   const ipAddress = (req.headers['x-forwarded-for'] ||
                       req.connection.remoteAddress ||
                       req.socket.remoteAddress ||
                       req.connection.socket.remoteAddress).split(",")[0];
+  */
+  const ipAddress = requestIp.getClientIp(req);
   const language = req.headers['accept-language'];
   const software = req.headers['user-agent'];
-  console.log(ipAddress)
-  // res.json({ ipaddress: blank, language: blank, software: blank })
+  res.json({ ipaddress: ipAddress, language: language, software: software })
 })
 
 
