@@ -4,6 +4,7 @@
 // init project
 var express = require('express');
 var app = express();
+const requestIp = require('request-ip');
 
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
 // so that your API is remotely testable by FCC 
@@ -12,6 +13,13 @@ app.use(cors({optionsSuccessStatus: 200}));  // some legacy browsers choke on 20
 
 // http://expressjs.com/en/starter/static-files.html
 app.use(express.static('public'));
+
+// using request-ip MW
+const ipMW = (req, res, next) => {
+  console.log('res.locals object:',res.locals,'//////////////////////////////');
+  res.locals.clientIp = requestIp.getClientIp(req); // to attach value to "res.locals" Object
+  next();
+}
 
 // http://expressjs.com/en/starter/basic-routing.html
 app.get("/", function (req, res) {
@@ -24,6 +32,17 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
+app.route('/api/whoami').get(ipMW, (req, res) => {
+  // const ipAddress = res.locals.clientIp;
+  const ipAddress = (req.headers['x-forwarded-for'] ||
+                      req.connection.remoteAddress ||
+                      req.socket.remoteAddress ||
+                      req.connection.socket.remoteAddress).split(",")[0];
+  const language = req.headers['accept-language'];
+  const software = req.headers['user-agent'];
+  console.log(ipAddress)
+  // res.json({ ipaddress: blank, language: blank, software: blank })
+})
 
 
 // listen for requests :)
