@@ -3,6 +3,8 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const bodyParser = require('body-parser');
+const validUrl = require('valid-url');
+const Url = require('./models/url');
 
 // Basic Configuration
 const port = process.env.PORT || 3000;
@@ -27,6 +29,11 @@ app.get('/', function(req, res) {
 app.route('/api/shorturl/new').post((req,res)=>{
   const local = req.headers.host;   // log 'localhost:3000'
   const inputUrl = req.body.url;
+  if(validUrl.isUri(inputUrl)){   // <?> it doesn't work in right way when omitting http:// or https://
+    console.log('Yes!')
+  } else {
+    console.log('Sorry, it seems a wrong url format. Please enter valid url')
+  }
 })
 
 
