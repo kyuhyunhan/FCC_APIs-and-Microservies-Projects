@@ -15,15 +15,25 @@ app.get('/', function(req, res) {
   res.sendFile(process.cwd() + '/views/index.html');
 });
 
-// Your first API endpoint
-app.get('/api/hello', function(req, res) {
-  res.json({ greeting: 'hello API' });
-});
+
+
+// save the entered url in request body
+// assign a random url(/api/shorturl/randomNumber) to the original url.
+// when enter '../api/shorturl/randomNumber' in address bar, link to the original url.
+
+// in other words, I need an API which create linking url automatically.
+// And the API fetches data from somewhere has 'original url' and 'randomNumber' assigned.
 
 app.route('/api/shorturl/new').post((req,res)=>{
-  console.log(req.body.url);
-  
+  const local = req.headers.host;   // log 'localhost:3000'
+  const inputUrl = req.body.url;
 })
+
+
+
+
+
+
 
 app.listen(port, function() {
   console.log(`Listening on port ${port}`);
