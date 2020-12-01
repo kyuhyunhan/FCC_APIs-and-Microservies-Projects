@@ -6,9 +6,20 @@ const app = express();
 const bodyParser = require('body-parser');
 const validUrl = require('valid-url');
 const Url = require('./models/url');
+const mongoose = require('mongoose');
+const db = mongoose.connection;
 
 // Basic Configuration
 const port = process.env.PORT || 3000;
+
+// mongoDB and mongoose connection
+mongoose.connect('mongodb://localhost:27017/url_shortener');
+db.on('error', function(err) {
+  console.log('Error : ', err);
+});
+db.once('open', function() {
+  console.log('Open Event');
+});
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -32,7 +43,10 @@ app.route('/api/shorturl/new').post((req,res)=>{
   const inputUrl = req.body.url;
 
   if(validUrl.isUri(inputUrl)){   // <?> it doesn't work in right way when omitting http:// or https://
-    console.log('Yes!')
+    console.log('Yes!');
+    
+    const shortUrl = nanoid(5);
+
     Url.find({url:inputUrl}, function(err, data) {
       if(err){
         console.err(err);
