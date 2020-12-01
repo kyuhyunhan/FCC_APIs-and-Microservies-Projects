@@ -1,4 +1,5 @@
 require('dotenv').config();
+import { json } from 'body-parser';
 import { nanoid } from 'nanoid';
 const express = require('express');
 const cors = require('cors');
@@ -63,14 +64,29 @@ app.route('/api/shorturl/new').post((req,res)=>{
               res.json({original_url: originalUrl, short_url: shortUrl});
             }
           })
+        } else {
+          res.json({original_url: data[0].url, short_url: data[0].short});
         }
       }
     })
   } else {
-    console.log('Sorry, it seems a wrong url format. Please enter valid url')
+    res.send('Sorry, it seems like a wrong url format. Please enter valid url')
   }
 })
 
+app.route('/api/shorturl/:randomId').get((req,res) => {
+  Url.findOne({short:req.params.randomId}, (err, data) => {
+    if(err){
+      console.log(err);
+    } else {
+      if(data) {
+        res.redirect(data.url);
+      } else {
+        res.json({error: "This url is not on the database."});
+      }
+    }
+  })
+})
 
 
 
